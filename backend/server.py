@@ -1,9 +1,22 @@
-from flask import Flask
-app = Flask(__name__)
+import os
+from dotenv import load_dotenv
+from flask import Flask, jsonify
+from flask_cors import CORS
 
-@app.route('/')
+load_dotenv()
+frontend_host = os.environ.get('FRONTEND_HOST', 'http://localhost:5173')
+
+app = Flask(__name__)
+CORS(
+    app,
+    resources = {
+        r'/api/*': {'origins': 'http'}
+    }
+)
+
+@app.route('/api/hello')
 def hello():
-    return 'hello world'
+    return jsonify({ 'message': 'hello world' }), 200
 
 if __name__ == '__main__':
     app.run()
