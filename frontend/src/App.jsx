@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import axios from 'axios';
+import { instance } from './api/axios'
 import reactLogo from './assets/react.svg'
 import viteLogo from './assets/vite.svg'
 import heroImg from './assets/hero.png'
@@ -7,17 +7,15 @@ import './App.css'
 
 function App() {
   const [data, setData] = useState([]);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState('');
+
+  const fetchPing = async () => {
+    const res = await instance.get('/api/hello');
+    setData(res.data);
+  }
 
   useEffect(() => {
-    axios.get('/api/hello')
-      .then((res) => {
-        console.log(res)
-        setData(res.data);
-      })
-      .catch((err) => {
-        setError(err.message);
-      })
+    fetchPing();
   }, []);
 
   return (
