@@ -1,8 +1,5 @@
 import { useEffect, useState } from 'react'
 import { instance } from './api/axios'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
 import './App.css'
 
 function App() {
@@ -12,8 +9,6 @@ function App() {
   const [currentTurnNumber, setCurrentTurnNumber] = useState(0)
   const [gameStatus, setGameStatus] = useState('in_progress')
   const [guessHistory, setGuessHistory] = useState([])
-
-
 
   const startGame = async () => {
     try {
