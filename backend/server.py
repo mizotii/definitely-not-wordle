@@ -88,12 +88,16 @@ def guess():
 
         session.modified = True
 
-        return jsonify({
+        response = {
             'is_valid': True,
             'current_turn_number': session['current_turn_number'],
             'game_status': session['game_status'],
             'guess_history': session['guess_history'],
-        }), 200
+        }
+        if session['game_status'] != 'in_progress':
+            response['current_answer'] = session['current_answer']
+
+        return jsonify(response), 200
     
     else:
         return jsonify({ 'message': 'No session -- call /api/game/start' }), 404
