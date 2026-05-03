@@ -8,3 +8,18 @@ export const instance = axios.create({
         'Accept': 'application/json',
     },
 });
+
+instance.interceptors.response.use(
+    (response) => {
+        return response;
+    },
+    (error) => {
+        if (error.response) {
+          throw new Error(`An error occured on the server: ${error.response.data}, ${error.response.status}`)
+        } else if (error.request) {
+          throw new Error(`Couldn't reach the server: ${error.request}`)
+        } else {
+          throw new Error(`An unknown error occured: ${error.message}`)
+        }
+    }
+)
