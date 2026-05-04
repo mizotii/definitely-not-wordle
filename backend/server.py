@@ -6,6 +6,7 @@ from helpers import guess_word, is_correct, sanitize_guess
 from typing import Dict, List
 from wordle import WordList
 
+WORD_LENGTH = 5
 MAX_TURNS = 6
 
 load_dotenv()
@@ -31,7 +32,7 @@ word_list = WordList()
 
 @app.route('/api/game/start', methods=['POST'])
 def start():
-    guess_history: List[Dict[str, List[str]]] = []
+    guess_history: List[Dict[str, List[str]]] = [{'': []} for _ in range(MAX_TURNS)]
 
     session['current_answer'] = word_list.replace_current_answer()
     session['current_turn_number'] = 0
@@ -43,7 +44,9 @@ def start():
     return jsonify({
         'current_turn_number': session['current_turn_number'],
         'game_status': session['game_status'],
-        'guess_history': session['guess_history']
+        'guess_history': session['guess_history'],
+        'word_length': WORD_LENGTH,
+        'max_turns': MAX_TURNS,
     }), 200
 
 @app.route('/api/game', methods=['GET'])
@@ -52,7 +55,7 @@ def status():
         return jsonify({
             'current_turn_number': session['current_turn_number'],
             'game_status': session['game_status'],
-            'guess_history': session['guess_history']
+            'guess_history': session['guess_history'],
         }), 200
     
     else:
