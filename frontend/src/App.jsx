@@ -71,6 +71,7 @@ function App() {
     const handleKeyDown = (e) => {
       if (gameStatus === 'in_progress') {
         if (e.key === 'Enter' && currentGuess.length === WORD_LENGTH) {
+          e.preventDefault();
           handleSubmitGuess(currentGuess);
         }
         else if (e.key === 'Backspace' && currentGuess.length > 0) {
