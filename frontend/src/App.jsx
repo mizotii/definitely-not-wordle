@@ -15,6 +15,7 @@ function App() {
   const [currentTurnNumber, setCurrentTurnNumber] = useState(0);
   const [gameStatus, setGameStatus] = useState('in_progress');
   const [guessHistory, setGuessHistory] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const startGame = async () => {
     setCurrentGuess('');
@@ -22,6 +23,7 @@ function App() {
     setCurrentTurnNumber(0);
     setGameStatus('in_progress');
     setGuessHistory([]);
+    setLoading(true);
 
     try {
       const res = await instance.post('/api/game/start');
@@ -32,6 +34,8 @@ function App() {
       setGuessHistory(data.guess_history);
     } catch (error) {
         setMessageText(error.message);
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -100,6 +104,12 @@ function App() {
     return () => window.removeEventListener('keydown', handleKeyDown);
 
   }, [currentGuess, gameStatus])
+
+  if (loading) return (
+    <div className="min-h-screen bg-white flex items-center justify-center">
+      <p className="text-sm tracking-widest uppercase text-gray-400 animate-pulse">loading…</p>
+    </div>
+  );
 
   return (
     <div className="min-h-screen bg-white flex flex-col items-center justify-center gap-6">
