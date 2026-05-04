@@ -18,7 +18,7 @@ if not secret_key:
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = secret_key
-app.config['SESSION_COOKIE_SAMESITE'] = None
+app.config['SESSION_COOKIE_SAMESITE'] = 'None'
 app.config['SESSION_COOKIE_SECURE'] = is_production
 CORS(
     app,
@@ -57,7 +57,7 @@ def status():
         }), 200
     
     else:
-        return jsonify({ 'message': 'No session -- call /api/game/start' }), 404
+        return jsonify({ 'message': 'No session found. Try pressing reset' }), 404
     
 @app.route('/api/guess', methods=['POST'])
 def guess():
