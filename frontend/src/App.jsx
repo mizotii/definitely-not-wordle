@@ -50,15 +50,10 @@ function App() {
       const data = res.data;
 
       setCurrentGuess('');
-      setMessageText('');
+      setMessageText(data.message);
       setCurrentTurnNumber(data.current_turn_number);
       setGameStatus(data.game_status);
       setGuessHistory(data.guess_history);
-
-      if (data.game_status != 'in_progress') {
-        setMessageText(`You ${data.game_status}. The word was: ${data.current_answer}`);
-        setCurrentAnswer(data.current_answer);
-      }
 
     } catch (error) {
         setMessageText(error.message);
