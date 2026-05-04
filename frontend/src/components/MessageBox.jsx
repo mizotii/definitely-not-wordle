@@ -1,9 +1,9 @@
 const MessageBox = ({ message }) => {
 
+    if (!message) return null;
+
     return (
-        <div className='message-box'>
-            <h2>{message}</h2>
-        </div>   
+        <p className="text-sm tracking-wide text-gray-600">{message}</p>
     )
 }
 

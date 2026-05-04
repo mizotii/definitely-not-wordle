@@ -7,7 +7,7 @@ const Row = ({ guess, colors }) => {
     }
 
     return (
-        <div className='row'>
+        <div className="flex gap-1">
             {paddedGuessArray(guess).map((c, i) =>
                 <Tile letter={c} color={colors[i] ?? 'none'} key={i} />
             )}
