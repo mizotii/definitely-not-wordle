@@ -1,9 +1,9 @@
+[![wakatime](https://wakatime.com/badge/user/018dd8a2-8532-40da-867c-26fa74be2cc0/project/c56d1dac-1bd0-49cc-a270-1cc05e7f1ece.svg)](https://wakatime.com/badge/user/018dd8a2-8532-40da-867c-26fa74be2cc0/project/c56d1dac-1bd0-49cc-a270-1cc05e7f1ece)
 # definitely-not-wordle
 
 [definitely-not-wordle](https://definitely-not-wordle-client.onrender.com)
 
 A minimal Wordle clone. Flask backend, React frontend.
-(GoLinks 2026 Fullstack Intern Project)
 
 ## Prerequisites
 
