@@ -2,7 +2,6 @@ import os
 import random
 from typing import List, Set
 
-WORD_LENGTH = 5
 WORD_LIST_FILEPATH = os.environ.get('WORD_LIST_FILEPATH', './words.txt')
 
 class WordList:
