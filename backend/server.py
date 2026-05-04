@@ -24,14 +24,15 @@ CORS(
     app,
     resources = {
         r'/api/.*': {'origins': frontend_host}
-    }
+    },
+    supports_credentials=True
 )
 
 word_list = WordList()
 
 @app.route('/api/game/start', methods=['POST'])
 def start():
-    guess_history: List[Dict[str, List[str]]] = []
+    guess_history: List[Dict[str, List[str]]] = [{'': []} for _ in range(MAX_TURNS)]
 
     session['current_answer'] = word_list.replace_current_answer()
     session['current_turn_number'] = 0
@@ -43,7 +44,7 @@ def start():
     return jsonify({
         'current_turn_number': session['current_turn_number'],
         'game_status': session['game_status'],
-        'guess_history': session['guess_history']
+        'guess_history': session['guess_history'],
     }), 200
 
 @app.route('/api/game', methods=['GET'])
@@ -52,7 +53,7 @@ def status():
         return jsonify({
             'current_turn_number': session['current_turn_number'],
             'game_status': session['game_status'],
-            'guess_history': session['guess_history']
+            'guess_history': session['guess_history'],
         }), 200
     
     else:
@@ -77,7 +78,7 @@ def guess():
             }), 200
 
         result = guess_word(guess, session['current_answer'])
-        session['guess_history'].append({guess: result})
+        session['guess_history'][session['current_turn_number']] = {guess: result}
         session['current_turn_number'] += 1
 
         if is_correct(result):
@@ -108,5 +109,3 @@ def hello():
 
 if __name__ == '__main__':
     app.run()
-
-    
