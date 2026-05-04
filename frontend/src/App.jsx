@@ -29,6 +29,7 @@ function App() {
       const res = await instance.post('/api/game/start');
       const data = res.data;
 
+      localStorage.setItem('session_token', data.token);
       setCurrentTurnNumber(data.current_turn_number);
       setGameStatus(data.game_status);
       setGuessHistory(data.guess_history);

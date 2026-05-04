@@ -1,6 +1,7 @@
 import os
+import secrets
 from dotenv import load_dotenv
-from flask import Flask, jsonify, request, session
+from flask import Flask, jsonify, request
 from flask_cors import CORS
 from helpers import guess_word, is_correct, sanitize_guess
 from typing import Dict, List
@@ -10,107 +11,87 @@ MAX_TURNS = 6
 
 load_dotenv()
 frontend_host = os.environ.get('FRONTEND_HOST', 'http://localhost:5173')
-is_production = os.environ.get('FLASK_ENV') == 'production'
-secret_key = os.environ.get('SECRET_KEY', None)
-
-if not secret_key:
-    raise RuntimeError('SECRET_KEY environment variable not set')
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = secret_key
-app.config['SESSION_COOKIE_SAMESITE'] = 'None'
-app.config['SESSION_COOKIE_SECURE'] = is_production
 CORS(
     app,
-    resources = {
-        r'/api/.*': {'origins': frontend_host}
-    },
-    supports_credentials=True
+    resources={r'/api/.*': {'origins': frontend_host}},
+    allow_headers=['Content-Type', 'X-Session-Token'],
 )
 
 word_list = WordList()
+game_sessions: Dict[str, dict] = {}
 
 @app.route('/api/game/start', methods=['POST'])
 def start():
-    guess_history: List[Dict[str, List[str]]] = [{'': []} for _ in range(MAX_TURNS)]
-
-    session['current_answer'] = word_list.replace_current_answer()
-    session['current_turn_number'] = 0
-    session['game_status'] = 'in_progress'
-    session['guess_history'] = guess_history
-
-    session.modified = True
-
+    token = secrets.token_urlsafe(32)
+    game_sessions[token] = {
+        'current_answer': word_list.replace_current_answer(),
+        'current_turn_number': 0,
+        'game_status': 'in_progress',
+        'guess_history': [{'': []} for _ in range(MAX_TURNS)],
+    }
+    gs = game_sessions[token]
     return jsonify({
-        'current_turn_number': session['current_turn_number'],
-        'game_status': session['game_status'],
-        'guess_history': session['guess_history'],
+        'token': token,
+        'current_turn_number': gs['current_turn_number'],
+        'game_status': gs['game_status'],
+        'guess_history': gs['guess_history'],
     }), 200
 
 @app.route('/api/game', methods=['GET'])
 def status():
-    if session:
-        return jsonify({
-            'current_turn_number': session['current_turn_number'],
-            'game_status': session['game_status'],
-            'guess_history': session['guess_history'],
-        }), 200
-    
-    else:
-        return jsonify({ 'message': 'No session found. Try pressing reset' }), 404
-    
+    token = request.headers.get('X-Session-Token')
+    gs = game_sessions.get(token)
+    if not gs:
+        return jsonify({'message': 'No session found. Try pressing reset'}), 404
+    return jsonify({
+        'current_turn_number': gs['current_turn_number'],
+        'game_status': gs['game_status'],
+        'guess_history': gs['guess_history'],
+    }), 200
+
 @app.route('/api/guess', methods=['POST'])
 def guess():
-    if session:
-        guess = sanitize_guess(request.get_json()['guess'])
-        if not guess:
-            return jsonify({
-                'is_valid_guess': False,
-                'message': 'Invalid input',
-            }), 400
+    token = request.headers.get('X-Session-Token')
+    gs = game_sessions.get(token)
+    if not gs:
+        return jsonify({'message': 'No session found. Try pressing reset'}), 404
 
-        session.modified = True
+    guess = sanitize_guess(request.get_json()['guess'])
+    if not guess:
+        return jsonify({'is_valid_guess': False, 'message': 'Invalid input'}), 400
 
-        if not word_list.is_valid_guess(guess):
-            return jsonify({
-                'is_valid_guess': False,
-                'message': 'Invalid guess!',
-                'current_turn_number': session['current_turn_number'],
-                'game_status': session['game_status'],
-                'guess_history': session['guess_history'],
-            }), 200
+    if not word_list.is_valid_guess(guess):
+        return jsonify({
+            'is_valid_guess': False,
+            'message': 'Not in word list!',
+            'current_turn_number': gs['current_turn_number'],
+            'game_status': gs['game_status'],
+            'guess_history': gs['guess_history'],
+        }), 200
 
-        result = guess_word(guess, session['current_answer'])
-        session['guess_history'][session['current_turn_number']] = {guess: result}
-        session['current_turn_number'] += 1
+    result = guess_word(guess, gs['current_answer'])
+    gs['guess_history'][gs['current_turn_number']] = {guess: result}
+    gs['current_turn_number'] += 1
 
-        if is_correct(result):
-            session['game_status'] = 'won'
+    if is_correct(result):
+        gs['game_status'] = 'won'
+    elif gs['current_turn_number'] >= MAX_TURNS:
+        gs['game_status'] = 'lost'
 
-        elif session['current_turn_number'] >= MAX_TURNS:
-            session['game_status'] = 'lost'
+    response = {
+        'is_valid': True,
+        'current_turn_number': gs['current_turn_number'],
+        'game_status': gs['game_status'],
+        'guess_history': gs['guess_history'],
+        'message': ' ',
+    }
+    if gs['game_status'] != 'in_progress':
+        response['current_answer'] = gs['current_answer']
+        response['message'] = f"You {gs['game_status']}. The word was: {gs['current_answer']}"
 
-        session.modified = True
-
-        response = {
-            'is_valid': True,
-            'current_turn_number': session['current_turn_number'],
-            'game_status': session['game_status'],
-            'guess_history': session['guess_history'],
-            'message': ' ',
-        }
-        if session['game_status'] != 'in_progress':
-            response['current_answer'] = session['current_answer']
-            response['message'] = f'You {session['game_status']}. The word was: {session['current_answer']}'
-
-        return jsonify(response), 200
-    
-    else:
-        return jsonify({ 'message': 'No session -- call /api/game/start' }), 404
-
-@app.route('/api/hello')
-def hello():
-    return jsonify({ 'message': 'hello world' }), 200
+    return jsonify(response), 200
 
 if __name__ == '__main__':
     app.run()

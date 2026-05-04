@@ -7,7 +7,12 @@ export const instance = axios.create({
         'Content-Type': 'application/json',
         'Accept': 'application/json',
     },
-    withCredentials: true,
+});
+
+instance.interceptors.request.use((config) => {
+    const token = localStorage.getItem('session_token');
+    if (token) config.headers['X-Session-Token'] = token;
+    return config;
 });
 
 instance.interceptors.response.use(
