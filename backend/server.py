@@ -18,7 +18,7 @@ if not secret_key:
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = secret_key
-app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
+app.config['SESSION_COOKIE_SAMESITE'] = None
 app.config['SESSION_COOKIE_SECURE'] = is_production
 CORS(
     app,
@@ -75,6 +75,9 @@ def guess():
             return jsonify({
                 'is_valid_guess': False,
                 'message': 'Invalid guess!',
+                'current_turn_number': session['current_turn_number'],
+                'game_status': session['game_status'],
+                'guess_history': session['guess_history'],
             }), 200
 
         result = guess_word(guess, session['current_answer'])
@@ -97,6 +100,7 @@ def guess():
         }
         if session['game_status'] != 'in_progress':
             response['current_answer'] = session['current_answer']
+            response['message'] = f'You {session['game_status']}. The word was: {session['current_answer']}'
 
         return jsonify(response), 200
     
