@@ -3,6 +3,8 @@
 
 [definitely-not-wordle](https://definitely-not-wordle-client.onrender.com)
 
+<img width="324" height="567" alt="The winning board of a game that definitely is not Wordle" src="https://github.com/user-attachments/assets/02c79b8b-af6d-4ab0-8da1-7b6415759797" />
+
 A minimal Wordle clone. Flask backend, React frontend.
 
 ## Prerequisites
