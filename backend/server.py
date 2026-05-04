@@ -97,6 +97,7 @@ def guess():
             'current_turn_number': session['current_turn_number'],
             'game_status': session['game_status'],
             'guess_history': session['guess_history'],
+            'message': ' ',
         }
         if session['game_status'] != 'in_progress':
             response['current_answer'] = session['current_answer']
