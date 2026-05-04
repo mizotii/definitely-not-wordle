@@ -3,9 +3,13 @@
 
 [definitely-not-wordle](https://definitely-not-wordle-client.onrender.com)
 
-<img width="324" height="567" alt="The winning board of a game that definitely is not Wordle" src="https://github.com/user-attachments/assets/02c79b8b-af6d-4ab0-8da1-7b6415759797" />
+<img width="885" height="1811" alt="The winning board of a game that definitely is not Wordle" src="https://github.com/user-attachments/assets/c79c510b-c3cd-45d5-ade8-638ddd1946ed" />
 
 A minimal Wordle clone. Flask backend, React frontend.
+
+## TODOs
+
+- Colored keyboard. Consider remembering what letters you've selected a mental exercise for now.
 
 ## Prerequisites
 
