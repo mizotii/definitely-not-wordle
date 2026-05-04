@@ -7,9 +7,12 @@
 
 A minimal Wordle clone. Flask backend, React frontend.
 
-## TODOs
+## Limitations
 
-- Colored keyboard. Consider remembering what letters you've selected a mental exercise for now.
+- The keyboard isn't colored. Consider remembering what letters you've selected a mental exercise for now.
+- The ENTER key doesn't work
+- Randomly picking from a list of valid words means that a lot of the time the words are going to be bad Wordle words.
+  - A fun TODO would be implementing evil mode (where the correct word switches based on each guess in such a way that it gives as little clues as possible)
 
 ## Prerequisites
 
