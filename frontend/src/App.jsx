@@ -10,15 +10,18 @@ import ResetButton from './components/ResetButton';
 function App() {
 
   const [currentGuess, setCurrentGuess] = useState('');
-  const [messageText, setMessageText] = useState('');
-
+  const [messageText, setMessageText] = useState(' ');
   const [currentTurnNumber, setCurrentTurnNumber] = useState(0);
   const [gameStatus, setGameStatus] = useState('in_progress');
   const [guessHistory, setGuessHistory] = useState([]);
 
-  const [currentAnswer, setCurrentAnswer] = useState();
-
   const startGame = async () => {
+    setCurrentGuess('');
+    setMessageText(' ');
+    setCurrentTurnNumber(0);
+    setGameStatus('in_progress');
+    setGuessHistory([]);
+
     try {
       const res = await instance.post('/api/game/start');
       const data = res.data;
@@ -50,15 +53,10 @@ function App() {
       const data = res.data;
 
       setCurrentGuess('');
-      setMessageText('');
+      setMessageText(data.message);
       setCurrentTurnNumber(data.current_turn_number);
       setGameStatus(data.game_status);
       setGuessHistory(data.guess_history);
-
-      if (data.game_status != 'in_progress') {
-        setMessageText(`You ${data.game_status}. The word was: ${data.current_answer}`);
-        setCurrentAnswer(data.current_answer);
-      }
 
     } catch (error) {
         setMessageText(error.message);
@@ -90,8 +88,8 @@ function App() {
 
   return (
     <div className="min-h-screen bg-white flex flex-col items-center justify-center gap-6">
-      <h1 className="text-2xl font-semibold tracking-widest uppercase">Wordle</h1>
       <MessageBox message={messageText}/>
+      <h1 className="text-2xl font-semibold tracking-widest uppercase">Wordle</h1>
       <Grid
         currentGuess={currentGuess}
         currentTurnNumber={currentTurnNumber}
