@@ -6,7 +6,6 @@ from helpers import guess_word, is_correct, sanitize_guess
 from typing import Dict, List
 from wordle import WordList
 
-WORD_LENGTH = 5
 MAX_TURNS = 6
 
 load_dotenv()
@@ -45,8 +44,6 @@ def start():
         'current_turn_number': session['current_turn_number'],
         'game_status': session['game_status'],
         'guess_history': session['guess_history'],
-        'word_length': WORD_LENGTH,
-        'max_turns': MAX_TURNS,
     }), 200
 
 @app.route('/api/game', methods=['GET'])

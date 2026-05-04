@@ -1,6 +1,6 @@
 import Row from "./Row";
 
-const Grid = ({ currentGuess, currentTurnNumber, gameStatus, guessHistory, wordLength, maxTurns }) => {
+const Grid = ({ currentGuess, currentTurnNumber, gameStatus, guessHistory }) => {
 
     return (
         <div className='grid'>

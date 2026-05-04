@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 import { instance } from './api/axios'
 import './App.css'
+import MessageBox from './components/MessageBox';
+import Grid from './components/Grid';
 
 function App() {
   const [currentGuess, setCurrentGuess] = useState('');
@@ -10,9 +12,6 @@ function App() {
   const [gameStatus, setGameStatus] = useState('in_progress');
   const [guessHistory, setGuessHistory] = useState([]);
 
-  const [wordLength, setWordLength] = useState(5);
-  const [maxTurns, setMaxTurns] = useState(6);
-
   const startGame = async () => {
     try {
       const res = await instance.post('/api/game/start');
@@ -21,8 +20,6 @@ function App() {
       setCurrentTurnNumber(data.current_turn_number);
       setGameStatus(data.game_status);
       setGuessHistory(data.guess_history);
-      setGuessLength(data.guess_length);
-      setMaxTurns(data.max_turns);
     } catch (error) {
         setMessageText(error.message);
     }
@@ -47,6 +44,13 @@ function App() {
 
   return (
     <>
+      <MessageBox message={messageText}/>
+      <Grid
+        currentGuess={currentGuess}
+        currentTurnNumber={currentTurnNumber}
+        gameStatus={gameStatus}
+        guessHistory={guessHistory}
+      />
     </>
   )
 }

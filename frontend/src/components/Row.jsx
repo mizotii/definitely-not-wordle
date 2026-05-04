@@ -1,8 +1,9 @@
 import Tile from "./Tile";
+import { WORD_LENGTH } from "../constants";
 
-const Row = ({ guess, colors, wordLength }) => {
+const Row = ({ guess, colors }) => {
     function paddedGuessArray(str) {
-        return Array.from(str.padEnd(wordLength, '\u00A0'));
+        return Array.from(str.padEnd(WORD_LENGTH, '\u00A0'));
     }
 
     return (
