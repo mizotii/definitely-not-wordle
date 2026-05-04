@@ -56,7 +56,7 @@ function App() {
       setGuessHistory(data.guess_history);
 
       if (data.game_status != 'in_progress') {
-        setMessageText(`You ${data.game_status}.`);
+        setMessageText(`You ${data.game_status}. The word was: ${data.current_answer}`);
         setCurrentAnswer(data.current_answer);
       }
 
