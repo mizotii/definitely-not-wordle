@@ -89,7 +89,8 @@ function App() {
   }, [currentGuess, gameStatus])
 
   return (
-    <>
+    <div className="min-h-screen bg-white flex flex-col items-center justify-center gap-6">
+      <h1 className="text-2xl font-semibold tracking-widest uppercase">Wordle</h1>
       <MessageBox message={messageText}/>
       <Grid
         currentGuess={currentGuess}
@@ -97,14 +98,16 @@ function App() {
         gameStatus={gameStatus}
         guessHistory={guessHistory}
       />
-      <GuessButton
-        submitGuess={() => handleSubmitGuess(currentGuess)}
-        disabled={currentGuess.length != WORD_LENGTH || gameStatus != 'in_progress'}
-      />
-      <ResetButton 
-        reset={startGame}
-      />
-    </>
+      <div className="flex gap-3">
+        <GuessButton
+          submitGuess={() => handleSubmitGuess(currentGuess)}
+          disabled={currentGuess.length != WORD_LENGTH || gameStatus != 'in_progress'}
+        />
+        <ResetButton
+          reset={startGame}
+        />
+      </div>
+    </div>
   )
 }
 
