@@ -78,7 +78,7 @@ def guess():
             }), 200
 
         result = guess_word(guess, session['current_answer'])
-        session['guess_history'].append({guess: result})
+        session['guess_history'][session['current_turn_number']] = {guess: result}
         session['current_turn_number'] += 1
 
         if is_correct(result):
