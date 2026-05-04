@@ -1,9 +1,7 @@
 const MessageBox = ({ message }) => {
 
-    if (!message) return null;
-
     return (
-        <p className="text-sm tracking-wide text-gray-600">{message}</p>
+        <p className="text-sm tracking-wide text-gray-600 min-h-5">{message}</p>
     )
 }
 
