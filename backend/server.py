@@ -24,7 +24,8 @@ CORS(
     app,
     resources = {
         r'/api/.*': {'origins': frontend_host}
-    }
+    },
+    supports_credentials=True
 )
 
 word_list = WordList()
