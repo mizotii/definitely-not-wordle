@@ -3,12 +3,15 @@ import { instance } from './api/axios'
 import './App.css'
 
 function App() {
-  const [currentGuess, setCurrentGuess] = useState('')
-  const [messageText, setMessageText] = useState('')
+  const [currentGuess, setCurrentGuess] = useState('');
+  const [messageText, setMessageText] = useState('');
 
-  const [currentTurnNumber, setCurrentTurnNumber] = useState(0)
-  const [gameStatus, setGameStatus] = useState('in_progress')
-  const [guessHistory, setGuessHistory] = useState([])
+  const [currentTurnNumber, setCurrentTurnNumber] = useState(0);
+  const [gameStatus, setGameStatus] = useState('in_progress');
+  const [guessHistory, setGuessHistory] = useState([]);
+
+  const [wordLength, setWordLength] = useState(5);
+  const [maxTurns, setMaxTurns] = useState(6);
 
   const startGame = async () => {
     try {
@@ -18,6 +21,8 @@ function App() {
       setCurrentTurnNumber(data.current_turn_number);
       setGameStatus(data.game_status);
       setGuessHistory(data.guess_history);
+      setGuessLength(data.guess_length);
+      setMaxTurns(data.max_turns);
     } catch (error) {
         setMessageText(error.message);
     }
