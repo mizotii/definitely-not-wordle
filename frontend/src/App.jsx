@@ -44,16 +44,19 @@ function App() {
     }
   }
 
-  const handleSubmitGuess = async () => {
+  const handleSubmitGuess = async (guess) => {
     try {
-      const res = await instance.post('/api/guess');
+      const res = await instance.post('/api/guess', {guess});
       const data = res.data;
 
+      setCurrentGuess('');
+      setMessageText('');
       setCurrentTurnNumber(data.current_turn_number);
       setGameStatus(data.game_status);
       setGuessHistory(data.guess_history);
 
       if (data.game_status != 'in_progress') {
+        setMessageText(`You ${data.game_status}.`);
         setCurrentAnswer(data.current_answer);
       }
 
@@ -66,6 +69,25 @@ function App() {
     startGame();
   }, []);
 
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (gameStatus === 'in_progress') {
+        if (e.key === 'Enter' && currentGuess.length === WORD_LENGTH) {
+          handleSubmitGuess(currentGuess);
+        }
+        else if (e.key === 'Backspace' && currentGuess.length > 0) {
+          setCurrentGuess(currentGuess.slice(0, -1));
+        }
+        else if (e.key.match(/^[a-z]$/i) && currentGuess.length < WORD_LENGTH) {
+          setCurrentGuess(currentGuess + e.key.toUpperCase());
+        }
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+
+  }, [currentGuess, gameStatus])
+
   return (
     <>
       <MessageBox message={messageText}/>
@@ -76,7 +98,7 @@ function App() {
         guessHistory={guessHistory}
       />
       <GuessButton
-        submitGuess={handleSubmitGuess}
+        submitGuess={() => handleSubmitGuess(currentGuess)}
         disabled={currentGuess.length != WORD_LENGTH || gameStatus != 'in_progress'}
       />
       <ResetButton 
