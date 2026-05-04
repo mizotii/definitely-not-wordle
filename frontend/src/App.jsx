@@ -6,6 +6,7 @@ import MessageBox from './components/MessageBox';
 import Grid from './components/Grid';
 import GuessButton from './components/GuessButton';
 import ResetButton from './components/ResetButton';
+import Keyboard from './components/Keyboard';
 
 function App() {
 
@@ -67,6 +68,19 @@ function App() {
     startGame();
   }, []);
 
+  const handleVirtualKey = (key) => {
+    if (gameStatus !== 'in_progress') {
+      return;
+    }
+    if (key === 'Enter' && currentGuess.length === WORD_LENGTH) {
+      handleSubmitGuess(currentGuess);
+    } else if (key === 'Backspace' && currentGuess.length > 0) {
+      setCurrentGuess(currentGuess.slice(0, -1));
+    } else if (key.match(/^[a-z]$/i) && currentGuess.length < WORD_LENGTH) {
+      setCurrentGuess(currentGuess + key.toUpperCase());
+    }
+  };
+
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (gameStatus === 'in_progress') {
@@ -97,6 +111,7 @@ function App() {
         gameStatus={gameStatus}
         guessHistory={guessHistory}
       />
+      <Keyboard onKey={handleVirtualKey} />
       <div className="flex gap-3">
         <GuessButton
           submitGuess={() => handleSubmitGuess(currentGuess)}
